@@ -13,14 +13,14 @@ class Grafo
     private:
         std::unordered_map<std::string, Nodo> mapa;
 
-    public:
+    public:        
         Grafo(std::string archivo_txt)
         {
             std::ifstream archivo(archivo_txt);
             std::string linea, subcadena, subsubcadena, valor;
-            std::size_t posicion, inicio = 0, subposicion, subinicio;
+            std::size_t posicion, inicio = 0, subinicio;
             u_int8_t comas;
-            std::vector<std::string> cola;
+            std::vector<std::string> colaVecinos, colaPesos, colaHeuristicas;
 
             while (getline(archivo, linea)) 
             {
@@ -40,15 +40,11 @@ class Grafo
                         break;
                     
                     case 1:
-                        while ((subposicion = subcadena.find(' ', subinicio)) != std::string::npos)
-                        {
-                            subsubcadena = subcadena.substr(subinicio, subposicion - subinicio);
-                            cola.push_back(subsubcadena);
-                            subinicio = subposicion + 1;
-                        }
-                        subsubcadena = subcadena.substr(subinicio);
-                        cola.push_back(subsubcadena);
+                        leerLinea(colaVecinos, subcadena, subinicio);
                         break;
+
+                    case 2:
+                        leerLinea(colaPesos, subcadena, subinicio);
                     }
 
                     inicio = posicion + 1;                    
@@ -57,16 +53,26 @@ class Grafo
                 subcadena = linea.substr(inicio);
                 subinicio = 1;
 
-                while ((subposicion = subcadena.find(' ', subinicio)) != std::string::npos)
+                leerLinea(colaHeuristicas, subcadena, subinicio);
+                
+                if (colaVecinos.size() != colaPesos.size() || colaPesos.size() != colaHeuristicas.size())
+                    throw std::runtime_error("No hay la misma cantidad de vecinos, pesos y heuristicas...");
+
+                while (!colaVecinos.empty())
                 {
-                    subsubcadena = subcadena.substr(subinicio, subposicion - subinicio);
-                    nodo.setArista(cola[0], subsubcadena);
-                    cola.erase(cola.begin());
-                    subinicio = subposicion + 1;
+                    try
+                    {
+                        nodo.setArista(colaVecinos[0], colaPesos[0], colaHeuristicas[0]);
+                        colaVecinos.erase(colaVecinos.begin());
+                        colaPesos.erase(colaPesos.begin());
+                        colaHeuristicas.erase(colaHeuristicas.begin());
+                    }
+                    catch(const std::exception &e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                    
                 }
-                subsubcadena = subcadena.substr(subinicio, subposicion - subinicio);
-                nodo.setArista(cola[0], subsubcadena);
-                cola.erase(cola.begin());
 
                 mapa[nodo.getNombre()] = nodo;
             }
@@ -77,10 +83,10 @@ class Grafo
             mapa[nodo.getNombre()] = nodo;
         }
 
-        void connectNode(std::string nodo1, std::string nodo2, std::string peso)
+        void connectNode(std::string nodo1, std::string nodo2, std::string peso, std::string heuristica)
         {
-            mapa[nodo1].setArista(nodo2, peso);
-            mapa[nodo2].setArista(nodo1, peso);
+            mapa[nodo1].setArista(nodo2, peso, heuristica);
+            mapa[nodo2].setArista(nodo1, peso, heuristica);
         }
 
         void verGrafo()
@@ -97,7 +103,7 @@ class Grafo
                     if (!primero) 
                         std::cout << ", ";
                     
-                    std::cout << "(" << arista.destino << ", " << arista.peso << ")";
+                    std::cout << "(" << arista.destino << ", " << arista.peso << ", " << arista.heuristica << ")";
                     
                     primero = false;
                 }
@@ -108,6 +114,21 @@ class Grafo
         std::unordered_map<std::string, Nodo> &getMapa()
         {
             return this->mapa;
+        }
+
+        void leerLinea (std::vector<std::string> &cola, std::string &subcadena, std::size_t &subinicio)
+        {
+            size_t subposicion;
+            std::string subsubcadena;
+
+            while ((subposicion = subcadena.find(' ', subinicio)) != std::string::npos)
+            {
+                subsubcadena = subcadena.substr(subinicio, subposicion - subinicio);
+                cola.push_back(subsubcadena);
+                subinicio = subposicion + 1;
+            }
+            subsubcadena = subcadena.substr(subinicio);
+            cola.push_back(subsubcadena);
         }
 };
 #endif

@@ -1,0 +1,84 @@
+#ifndef GREEDY
+#define GREEDY
+
+#include <iostream>
+#include <vector>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include "../nodo.hpp"
+#include <queue>
+#include <algorithm>
+
+
+std::vector<std::string> greedy(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
+{
+    std::vector<std::pair<float, std::string>> cola;
+    std::unordered_set<std::string> visitados, frontera;
+    std::vector<std::string> orden_visita;
+    std::string nodoActual, destino;
+    std::unordered_map<std::string, std::pair<std::string, float>> padre;
+    float costo = 0, menor;
+    size_t posicion;
+
+    cola.push_back({0.0f, inicio});
+
+    while (!cola.empty())
+    {
+        menor = 9999999999;
+        posicion = 0;
+
+        for (size_t i = 0; i < cola.size(); i++)
+        {
+            if (cola[i].first < menor)
+            {
+                menor = cola[i].first;
+                posicion = i;
+            }
+        }
+
+        nodoActual = cola[posicion].second;
+        cola.erase(cola.begin() + posicion);
+        frontera.erase(nodoActual);
+
+        orden_visita.push_back(nodoActual);
+        visitados.insert(nodoActual);
+
+
+        if (nodoActual == objetivo)
+        {
+            std::vector<std::string> camino;
+            std::string actual = objetivo;
+
+            while (actual != inicio)
+            {
+                camino.push_back(actual);
+                costo += padre[actual].second;
+                actual = padre[actual].first;
+            }
+
+            camino.push_back(inicio);
+            std::reverse(camino.begin(), camino.end());
+
+            std::cout << "Costo de camino: " << costo << std::endl;
+            return camino;
+        }
+
+        auto& aristas = mapa[nodoActual].getAristas();
+
+
+        for (auto& arista : aristas)
+        {
+            if ((visitados.find(arista.destino) == visitados.end()) && frontera.find(arista.destino) == frontera.end())
+            {
+                frontera.insert(arista.destino);
+                cola.push_back({std::stof(arista.heuristica), arista.destino});
+                padre[arista.destino] = {nodoActual, std::stof(arista.peso)};
+            }
+        }
+    }
+    
+    return {};
+}
+
+#endif

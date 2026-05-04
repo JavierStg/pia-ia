@@ -27,9 +27,14 @@ class Nodo
             this->nombre = nombre;
         }
 
-        void setArista(std::string destino, std::string peso)
+        void setArista(std::string destino, std::string peso, std::string heuristica)
         {
-            this->aristas.emplace(destino, peso);
+            this->aristas.emplace(destino, peso, heuristica);
+        }
+
+        std::set<arista> &getArista()
+        {
+            return this->aristas;
         }
 };
 #endif

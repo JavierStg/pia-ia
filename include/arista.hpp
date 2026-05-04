@@ -7,8 +7,9 @@ typedef struct arista
 {
     std::string destino;
     std::string peso;
+    std::string heuristica;
 
-    arista(std::string d, std::string p) : destino(d), peso(p) {}
+    arista(std::string d, std::string p, std::string h) : destino(d), peso(p), heuristica(h){}
     
     bool operator<(const struct arista& a) const 
     {

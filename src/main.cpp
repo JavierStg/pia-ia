@@ -1,85 +1,105 @@
 #include "../include/grafo.hpp"
 #include "../include/algoritmos/bfs.hpp"
+#include "../include/algoritmos/dfs.hpp"
+#include "../include/algoritmos/greedy.hpp"
 
 int main()
 {
-    Grafo grafo("./grafo.txt");
-    u_int8_t opcion;
-    std::string inicio, objetivo;
-    std::vector<std::string> camino;
-
-    do
+    try
     {
+        Grafo grafo("./grafo.txt");
+
+        u_int8_t opcion;
+        std::string inicio, objetivo;
+        std::vector<std::string> camino;
+
         do
         {
-            std::cout << R"(Ingrese una opcion
-            a) BFS
-            b) Costo uniforme
-            c) DFS
-            d) DFS limitado
-            e) DFS iterativo
-            f) Greedy Search
-            g) A*
-            h) Mostrar conexiones
-            i) Salir
-            Opcion: )";
-
-            std::flush(std::cout);
-            std::cin >> opcion;
-
-            if(opcion < 'a' || opcion >'i')
-                std::cout << "\nIngrese una opcion correcta\n" << std::endl;
-
-        } while (opcion < 'a' || opcion >'i');
-        
-        if (opcion != 'h' && opcion != 'i')
-        {
-            std::cout << "Estado inicial: ";
-            std::cin >> inicio;
-            std::cout << "\nEstado objetivo: ";
-            std::cin >> objetivo;
-        }
-
-        std::cout << "\n" << std::endl;
-
-        switch (opcion)
-        {
-        case 'a':
-            camino = bfs(grafo.getMapa(), inicio, objetivo);
-            break;
-
-        case 'b':
-            break;
-
-        case 'h':
-            std::cout << std::endl;
-            grafo.verGrafo();
-            std::cout << std::endl;
-            break;
-        }
-        
-        if (opcion != 'h' && opcion != 'i')
-        {
-
-            if (camino.size() == 0)
-                std::cout << "No se encontro una solucion" << std::endl;
-            else
+            do
             {
-                bool primero = true;
-                for (u_int8_t i = 0; i < camino.size(); i++)
+                std::cout << R"(Ingrese una opcion
+                a) BFS
+                b) Costo uniforme
+                c) DFS
+                d) DFS limitado
+                e) DFS iterativo
+                f) Greedy Search
+                g) A*
+                h) Mostrar conexiones
+                i) Salir
+                Opcion: )";
+
+                std::flush(std::cout);
+                std::cin >> opcion;
+
+                if(opcion < 'a' || opcion >'i')
+                    std::cout << "\nIngrese una opcion correcta\n" << std::endl;
+
+            } while (opcion < 'a' || opcion >'i');
+            
+            if (opcion != 'h' && opcion != 'i')
+            {
+                std::cout << "Estado inicial: ";
+                std::cin >> inicio;
+                std::cout << "\nEstado objetivo: ";
+                std::cin >> objetivo;
+            }
+
+            std::cout << "\n" << std::endl;
+
+            switch (opcion)
+            {
+            case 'a':
+                camino = bfs(grafo.getMapa(), inicio, objetivo);
+                break;
+
+            case 'b':
+                break;
+
+            case 'c':
+                camino = dfs(grafo.getMapa(), inicio, objetivo);
+                break;
+
+            case 'f':
+                camino = greedy(grafo.getMapa(), inicio, objetivo);
+                break;
+
+            case 'h':
+                std::cout << std::endl;
+                grafo.verGrafo();
+                std::cout << std::endl;
+                break;
+            }
+            
+            if (opcion != 'h' && opcion != 'i')
+            {
+
+                if (camino.size() == 0)
+                    std::cout << "No se encontro una solucion" << std::endl;
+                else
                 {
-                    if (!primero && i != camino.size())
-                        std::cout << " -> ";
-                    
-                    std::cout << camino[i];
-                    primero = false;
-                }
-            } 
-        }
+                    bool primero = true;
+                    for (u_int8_t i = 0; i < camino.size(); i++)
+                    {
+                        if (!primero && i != camino.size())
+                            std::cout << " -> ";
+                        
+                        std::cout << camino[i];
+                        primero = false;
+                    }
+                } 
+            }
 
-        std::cout << "\n" << std::endl;
+            std::cout << "\n" << std::endl;
 
-    } while (opcion != 'i');
+        } while (opcion != 'i');
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return EXIT_FAILURE;
+
+    }
     
     
     return EXIT_SUCCESS;

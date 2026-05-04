@@ -1,29 +1,28 @@
-#ifndef BFS_HPP
-#define BFS_HPP
+#ifndef DFS_HPP
+#define DFS_HPP
 
 #include <iostream>
 #include <vector>
+#include <stack>
 #include <unordered_map>
 #include <unordered_set>
 #include "../nodo.hpp"
-#include <queue>
 
-std::vector<std::string> bfs(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
+std::vector<std::string> dfs(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
 {
-    std::queue<std::string> cola;
-    std::unordered_set<std::string> visitados;
+    std::stack<std::string> pila;
     std::vector<std::string> orden_visita;
+    std::unordered_set<std::string> visitados;
     std::string nodoActual;
+
+    pila.push(inicio);
+    visitados.insert(inicio);
+    orden_visita.push_back(inicio);
     float costo = 0;
 
-    cola.push(inicio);
-    visitados.insert(inicio);
-
-    while (!cola.empty())
+    while (!pila.empty())
     {
-        nodoActual = cola.front();
-        cola.pop();
-        orden_visita.push_back(nodoActual);
+        nodoActual = pila.top();
 
         if (nodoActual == objetivo)
         {
@@ -31,6 +30,7 @@ std::vector<std::string> bfs(std::unordered_map<std::string, Nodo> &mapa, std::s
             return orden_visita;
         }
 
+        bool encontroCamino = false;
         auto& aristas = mapa[nodoActual].getAristas();
 
         for (auto& arista : aristas)
@@ -38,9 +38,18 @@ std::vector<std::string> bfs(std::unordered_map<std::string, Nodo> &mapa, std::s
             if (visitados.find(arista.destino) == visitados.end())
             {
                 visitados.insert(arista.destino);
-                cola.push(arista.destino);
+                orden_visita.push_back(arista.destino);
                 costo += std::stof(arista.peso);
+                
+                pila.push(arista.destino);
+                encontroCamino = true;
+                break;
             }
+        }
+
+        if (!encontroCamino)
+        {
+            pila.pop();
         }
     }
     
