@@ -6,22 +6,22 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
-#include "../nodo.hpp"
 #include <queue>
 #include <algorithm>
-
+#include "../nodo.hpp"
 
 std::vector<std::string> greedy(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
 {
     std::vector<std::pair<float, std::string>> cola;
     std::unordered_set<std::string> visitados, frontera;
-    std::vector<std::string> orden_visita;
-    std::string nodoActual, destino;
+    std::string nodoActual;
     std::unordered_map<std::string, std::pair<std::string, float>> padre;
     float costo = 0, menor;
     size_t posicion;
 
     cola.push_back({0.0f, inicio});
+    frontera.insert(inicio);
+    padre[inicio] = {"", 0};
 
     while (!cola.empty())
     {
@@ -41,7 +41,6 @@ std::vector<std::string> greedy(std::unordered_map<std::string, Nodo> &mapa, std
         cola.erase(cola.begin() + posicion);
         frontera.erase(nodoActual);
 
-        orden_visita.push_back(nodoActual);
         visitados.insert(nodoActual);
 
 

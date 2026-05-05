@@ -1,6 +1,8 @@
 #include "../include/grafo.hpp"
 #include "../include/algoritmos/bfs.hpp"
 #include "../include/algoritmos/dfs.hpp"
+#include "../include/algoritmos/dfsLimitado.hpp"
+#include "../include/algoritmos/costoUniforme.hpp"
 #include "../include/algoritmos/greedy.hpp"
 
 int main()
@@ -54,10 +56,19 @@ int main()
                 break;
 
             case 'b':
+                camino = costoUniforme(grafo.getMapa(), inicio, objetivo);
                 break;
 
             case 'c':
                 camino = dfs(grafo.getMapa(), inicio, objetivo);
+                break;
+
+            case 'd':
+                u_int8_t l;
+                std::cout << "Ingrese la profundidad: " << std::endl;
+                std::cin >> l;
+
+                camino = dfsLimitado(grafo.getMapa(), inicio, objetivo, l);
                 break;
 
             case 'f':
