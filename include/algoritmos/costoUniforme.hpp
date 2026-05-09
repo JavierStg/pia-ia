@@ -11,10 +11,10 @@
 
 std::vector<std::string> costoUniforme(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
 {
-    std::vector<std::pair<float, std::string>> cola;
+    std::vector<std::pair<float, std::string>> cola; //costo para llegar al nodo, nodo
     std::unordered_set<std::string> visitados;
     std::string nodoActual;
-    std::unordered_map<std::string, std::pair<std::string, float>> padre;
+    std::unordered_map<std::string, std::pair<std::string, float>> padre; //nodo, padre, peso
     std::unordered_map<std::string, float> costo_acumulado;
 
     float menor, costo;

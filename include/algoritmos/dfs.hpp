@@ -8,13 +8,12 @@
 #include "../nodo.hpp"
 #include <algorithm>
 
-
 std::vector<std::string> dfs(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
 {
     std::stack<std::string> pila;
     std::unordered_set<std::string> visitados;
     std::string nodoActual;
-    std::unordered_map<std::string, std::pair<std::string, float>> padre;
+    std::unordered_map<std::string, std::pair<std::string, float>> padre; //nodo, padre, peso
 
     pila.push(inicio);
     float costo = 0;

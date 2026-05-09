@@ -1,9 +1,11 @@
 #include "../include/grafo.hpp"
 #include "../include/algoritmos/bfs.hpp"
+#include "../include/algoritmos/costoUniforme.hpp"
 #include "../include/algoritmos/dfs.hpp"
 #include "../include/algoritmos/dfsLimitado.hpp"
-#include "../include/algoritmos/costoUniforme.hpp"
+#include "../include/algoritmos/dfsIterativo.hpp"
 #include "../include/algoritmos/greedy.hpp"
+#include "../include/algoritmos/aStar.hpp"
 
 int main()
 {
@@ -43,11 +45,11 @@ int main()
             {
                 std::cout << "Estado inicial: ";
                 std::cin >> inicio;
-                std::cout << "\nEstado objetivo: ";
+                std::cout << "Estado objetivo: ";
                 std::cin >> objetivo;
             }
 
-            std::cout << "\n" << std::endl;
+            std::cout << std::endl;
 
             switch (opcion)
             {
@@ -64,15 +66,24 @@ int main()
                 break;
 
             case 'd':
-                u_int8_t l;
+                size_t l;
+
                 std::cout << "Ingrese la profundidad: " << std::endl;
                 std::cin >> l;
 
                 camino = dfsLimitado(grafo.getMapa(), inicio, objetivo, l);
                 break;
 
+            case 'e':
+                camino = dfsIterativo(grafo.getMapa(), inicio, objetivo);
+                break;
+
             case 'f':
                 camino = greedy(grafo.getMapa(), inicio, objetivo);
+                break;
+
+            case 'g':
+                camino = aStar(grafo.getMapa(), inicio, objetivo);
                 break;
 
             case 'h':

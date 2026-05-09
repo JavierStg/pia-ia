@@ -1,5 +1,5 @@
-#ifndef GREEDY_HPP
-#define GREEDY_HPP
+#ifndef ASTAR_HPP
+#define ASTAR_HPP
 
 #include <iostream>
 #include <vector>
@@ -10,18 +10,23 @@
 #include <algorithm>
 #include "../nodo.hpp"
 
-std::vector<std::string> greedy(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
+std::vector<std::string> aStar(std::unordered_map<std::string, Nodo> &mapa, std::string inicio, std::string objetivo)
 {
-    std::vector<std::pair<float, std::string>> cola; //peso, nodo
-    std::unordered_set<std::string> visitados, frontera;
+    std::vector<std::pair<std::pair<float, float>, std::string>> cola; // peso, heuristica, nodo
+    std::unordered_set<std::string> frontera;
     std::string nodoActual;
     std::unordered_map<std::string, std::pair<std::string, float>> padre; //nodo, padre, peso
+    std::unordered_map<std::string, float> g; //costo acumulado de un nodo
+
     float costo = 0, menor;
     size_t posicion;
+    
 
-    cola.push_back({0.0f, inicio});
+    cola.push_back({{0.0f, 0.0f}, inicio});
     frontera.insert(inicio);
     padre[inicio] = {"", 0};
+    g[inicio] = 0;
+
 
     while (!cola.empty())
     {
@@ -30,9 +35,9 @@ std::vector<std::string> greedy(std::unordered_map<std::string, Nodo> &mapa, std
 
         for (size_t i = 0; i < cola.size(); i++)
         {
-            if (cola[i].first < menor)
+            if (cola[i].first.first + cola[i].first.second< menor)
             {
-                menor = cola[i].first;
+                menor = cola[i].first.first + cola[i].first.second;
                 posicion = i;
             }
         }
@@ -40,9 +45,6 @@ std::vector<std::string> greedy(std::unordered_map<std::string, Nodo> &mapa, std
         nodoActual = cola[posicion].second;
         cola.erase(cola.begin() + posicion);
         frontera.erase(nodoActual);
-
-        visitados.insert(nodoActual);
-
 
         if (nodoActual == objetivo)
         {
@@ -68,10 +70,14 @@ std::vector<std::string> greedy(std::unordered_map<std::string, Nodo> &mapa, std
 
         for (auto& arista : aristas)
         {
-            if ((visitados.find(arista.destino) == visitados.end()) && frontera.find(arista.destino) == frontera.end())
+            float gAcumulado = g[nodoActual] + std::stof(arista.peso);
+
+            if (g.find(arista.destino) == g.end() || gAcumulado < g[arista.destino])
             {
+                g[arista.destino] = gAcumulado;
+
                 frontera.insert(arista.destino);
-                cola.push_back({std::stof(arista.heuristica), arista.destino});
+                cola.push_back({{gAcumulado, std::stof(arista.heuristica)}, arista.destino});
                 padre[arista.destino] = {nodoActual, std::stof(arista.peso)};
             }
         }

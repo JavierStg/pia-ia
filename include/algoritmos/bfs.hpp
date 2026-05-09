@@ -14,7 +14,7 @@ std::vector<std::string> bfs(std::unordered_map<std::string, Nodo> &mapa, std::s
     std::queue<std::string> cola;
     std::unordered_set<std::string> visitados;
     std::string nodoActual;
-    std::unordered_map<std::string, std::pair<std::string, float>> padre;
+    std::unordered_map<std::string, std::pair<std::string, float>> padre; //nodo, padre, peso
 
     cola.push(inicio);
     visitados.insert(inicio);
