@@ -7,6 +7,11 @@
 #include "../include/algoritmos/greedy.hpp"
 #include "../include/algoritmos/aStar.hpp"
 
+/*
+    Forma del archivo
+    Nodo, Vecinos (unidireccional), peso, heurística
+    Si no tiene vecinos, se pone un espacio, igual con los pesos y heurísticas
+*/
 int main()
 {
     try
