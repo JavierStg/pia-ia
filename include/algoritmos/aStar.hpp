@@ -30,7 +30,8 @@ std::vector<std::string> aStar(std::unordered_map<std::string, Nodo> &mapa, std:
 
     while (!cola.empty())
     {
-        menor = 9999999999;
+        menor = __FLT_MAX__;
+
         posicion = 0;
 
         for (size_t i = 0; i < cola.size(); i++)
